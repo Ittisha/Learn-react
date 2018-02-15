@@ -1,22 +1,19 @@
 import React, { Component } from 'react';
 import Comment from './Comment';
+import toggleOpenWrap from '../decorators/toggleOpen';
 
 class CommentsList extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            isOpen: false
-        }
     }
 
     render() {
-    if(!this.props.commentsData || this.props.commentsData.length === 0) {
-        return <p>There is no comments</p>
+    if(!this.props.commentsData.length) {
+        return <p>No comments</p>
     }
 
     return (<div>
-            <button onClick={this.onButtonClick}>{this.getButtonText()}</button>
+            <button onClick={this.props.toggle}>{this.getButtonText()}</button>
             {this.getComments()}
         </div>
     )
@@ -24,7 +21,7 @@ class CommentsList extends Component {
     }
 
     getComments() {
-        if(!this.state.isOpen) {
+        if(!this.props.isOpen) {
             return null;
         }
 
@@ -40,17 +37,12 @@ class CommentsList extends Component {
     }
 
     getButtonText() {
-        return this.state.isOpen ? `Hide comments` : `Show comments (${this.props.commentsData.length})`;
+        return this.props.isOpen ? `Hide comments` : `Show comments (${this.props.commentsData.length})`;
     }
-
-    onButtonClick = (evt) => {
-    evt.preventDefault();
-    this.setState({
-        isOpen: !this.state.isOpen
-    })
-
-    }
-
 }
 
-export default CommentsList;
+CommentsList.defaultProps = {
+    commentsData: []
+};
+
+export default toggleOpenWrap(CommentsList);
