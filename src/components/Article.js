@@ -1,51 +1,65 @@
 import React, { Component } from 'react';
-import CommentsList from './CommentList';
 import PropTypes from 'prop-types';
-import toggleOpenWrap from '../decorators/toggleOpen';
+import CommentsList from './CommentList';
 
 class Article extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
+
+    this.setContainerRef = this.setContainerRef.bind(this);
+    this.setCommentRef = this.setCommentRef.bind(this);
+  }
+
+  setCommentRef(elem) {
+    this.comments = elem;
+  }
+
+  getBody() {
+    const { article, isOpen } = this.props;
+
+    if (!isOpen) {
+      return null;
     }
 
-    render() {
-        const {article, isOpen, toggle} = this.props;
+    return (
+      <section>
+        <p>{article.text}</p>
+        <CommentsList commentsData={article.comments} ref={this.setCommentRef} />
+      </section>
+    );
+  }
 
-        return (
-            <div>
-                <h3>{article.title}</h3>
-                <button onClick = {toggle}>
-                    {isOpen ? `Close` : `Open`}
-                </button>
-                {this.getBody()}
-            </div>
-        )
-    }
+  setContainerRef(elem) {
+    this.container = elem;
+  }
 
-    getBody() {
-        const {article, isOpen} = this.props;
+  render() {
+    const { article, isOpen, toggle } = this.props;
 
-        if (!isOpen) {
-            return null;
-        }
-
-
-        return (
-            <section>
-                <p>{article.text}</p>
-                <CommentsList commentsData = {article.comments} />
-            </section>
-        )
-    }
-
+    return (
+      <div ref={this.setContainerRef} >
+        <h3>{article.title}</h3>
+        <button onClick={toggle}>
+          {isOpen ? 'Close' : 'Open'}
+        </button>
+        {this.getBody()}
+      </div>
+    );
+  }
 }
 
 Article.propTypes = {
-    article: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
-        text: PropTypes.string
-    }).isRequired
+  article: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    text: PropTypes.string,
+  }).isRequired,
+  isOpen: PropTypes.bool,
+  toggle: PropTypes.func.isRequired,
 };
 
-export default toggleOpenWrap(Article);
+Article.defaultProps = {
+  isOpen: null,
+};
+
+export default Article;

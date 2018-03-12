@@ -1,6 +1,7 @@
+/* global document */
 import React from 'react';
-import {render} from 'react-dom';
-import ArticleList from './components/ArticleList';
-import {articles} from './data';
+import { render } from 'react-dom';
+import App from './components/App';
+import { articles } from './data';
 
-render(<ArticleList data = {articles} />, document.getElementById('app'));
+render(<App articles={articles} />, document.getElementById('app'));

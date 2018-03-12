@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "eslint": "eslint --ignore-path src/.eslintignore src/",
     "start": "webpack-dev-server --hot --inline",
-    "build": "webpack"
+    "build": "webpack",
+    "test": "npm run eslint"
   },
   "repository": {
     "type": "git"
@@ -21,6 +23,11 @@
     "babel-preset-stage-0": "^6.5.0",
     "concurrently": "^3.5.0",
     "css-loader": "^0.28.4",
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
     "style-loader": "^0.18.2",
     "webpack": "^2.0.0",
     "webpack-dev-server": "^2.0.0"

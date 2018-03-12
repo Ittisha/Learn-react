@@ -1,48 +1,51 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Comment from './Comment';
 import toggleOpenWrap from '../decorators/toggleOpen';
 
-class CommentsList extends Component {
-    constructor(props) {
-        super(props);
-    }
+const getComments = (commentsData, isOpen) => {
+  if (!isOpen) {
+    return null;
+  }
 
-    render() {
-    if(!this.props.commentsData.length) {
-        return <p>No comments</p>
-    }
+  const commentElements = commentsData.map(element => (
+    <li key={element.id}>
+      <Comment comment={element} />
+    </li>
+  ));
 
-    return (<div>
-            <button onClick={this.props.toggle}>{this.getButtonText()}</button>
-            {this.getComments()}
-        </div>
-    )
+  return (
+    <ul>
+      {commentElements}
+    </ul>
+  );
+};
 
-    }
+const getButtonText = (commentsData, isOpen) => (
+  isOpen ? 'Hide comments' : `Show comments (${commentsData.length})`
+);
 
-    getComments() {
-        if(!this.props.isOpen) {
-            return null;
-        }
+const CommentsList = ({ commentsData = [], isOpen, toggle }) => {
+  if (!commentsData.length) {
+    return <p>No comments</p>;
+  }
 
-        const commentElements = this.props.commentsData.map(element => <li key = {element.id}>
-            <Comment comment = {element} />
-        </li>);
+  return (
+    <div>
+      <button onClick={toggle}>{getButtonText(commentsData, isOpen)}</button>
+      {getComments(commentsData, isOpen)}
+    </div>
+  );
+};
 
-        return (
-            <ul>
-                {commentElements}
-            </ul>
-        )
-    }
-
-    getButtonText() {
-        return this.props.isOpen ? `Hide comments` : `Show comments (${this.props.commentsData.length})`;
-    }
-}
+CommentsList.propTypes = {
+  commentsData: PropTypes.arrayOf(PropTypes.object),
+  isOpen: PropTypes.bool.isRequired,
+  toggle: PropTypes.func.isRequired,
+};
 
 CommentsList.defaultProps = {
-    commentsData: []
+  commentsData: [],
 };
 
 export default toggleOpenWrap(CommentsList);
