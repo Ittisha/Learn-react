@@ -1,6 +1,6 @@
 import React, { Component as ReactComponent } from 'react';
 
-const toggleOpenWrap = OriginalComponent => class WrappedComponent extends ReactComponent {
+const toggleOpenWrap = OriginalComponent => class ToggleOpen extends ReactComponent {
   constructor(props) {
     super(props);
 

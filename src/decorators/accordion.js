@@ -1,6 +1,6 @@
 import React, { Component as ReactComponent } from 'react';
 
-const accordionWrap = OriginalComponent => class WrappedComponent extends ReactComponent {
+const accordionWrap = OriginalComponent => class Accordion extends ReactComponent {
   constructor(props) {
     super(props);
 
@@ -15,26 +15,18 @@ const accordionWrap = OriginalComponent => class WrappedComponent extends ReactC
     return (
       <OriginalComponent
         {...this.props}
-        accordion={{
-      ...this.state,
-      toggleItem: this.toggleItem,
-    }}
+        toggleItem={this.toggleItem}
+        openItemId={this.state.openItemId}
       />
     );
   }
 
-  toggleItem(itemId) {
+  toggleItem(openItemId) {
     return (event) => {
       event.preventDefault();
-      if (this.state.openItemId === itemId) {
-        this.setState({
-          openItemId: null,
-        });
-      } else {
-        this.setState({
-          openItemId: itemId,
-        });
-      }
+      this.setState({
+        openItemId: this.state.openItemId === openItemId ? null : openItemId,
+      });
     };
   }
 };

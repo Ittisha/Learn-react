@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Article from './Article';
-import accordionWrap from '../decorators/Accordion';
+import accordionWrap from '../decorators/accordion';
 
 const ArticleList = (props) => {
   const articleElements = props.data.map(element => (
     <li key={element.id}>
       <Article
         article={element}
-        isOpen={element.id === props.accordion.openItemId}
-        toggle={props.accordion.toggleItem(element.id)}
+        isOpen={element.id === props.openItemId}
+        toggle={props.toggleItem(element.id)}
       />
     </li>));
 
@@ -32,10 +32,13 @@ ArticleList.propTypes = {
       text: PropTypes.string.isRequired,
     })),
   })).isRequired,
-  accordion: PropTypes.shape({
-    openItemId: PropTypes.string,
-    toggleItem: PropTypes.func.isRequired,
-  }).isRequired,
+  // from accordion
+  openItemId: PropTypes.string,
+  toggleItem: PropTypes.func.isRequired,
+};
+
+ArticleList.defaultProps = {
+  openItemId: null,
 };
 
 export default accordionWrap(ArticleList);
