@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ArticleList from './ArticleList';
+import DateSelect from './filters/DateSelect';
 
 const App = props => (
   <div>
+    <DateSelect />
     <ArticleList data={props.articles} />
   </div>
 );
