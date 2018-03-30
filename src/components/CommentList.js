@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Comment from './Comment';
+import CommentsForm from './CommentsForm';
 import toggleOpenWrap from '../decorators/toggleOpen';
 
 const getComments = (commentsData, isOpen) => {
@@ -27,13 +28,19 @@ const getButtonText = (commentsData, isOpen) => (
 
 const CommentsList = ({ commentsData = [], isOpen, toggle }) => {
   if (!commentsData.length) {
-    return <p>No comments</p>;
+    return (
+      <div>
+        <p>No comments</p>
+        <CommentsForm />
+      </div>
+    );
   }
 
   return (
     <div>
       <button onClick={toggle}>{getButtonText(commentsData, isOpen)}</button>
       {getComments(commentsData, isOpen)}
+      <CommentsForm />
     </div>
   );
 };
