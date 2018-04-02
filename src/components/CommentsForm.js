@@ -1,22 +1,7 @@
 import React, { Component } from 'react';
 import FormErrors from './FormErrors';
 import './style/CommentsForm.css';
-
-/**
- * Enum for limits values.
- * @readonly
- * @enum {number}
- */
-const limits = {
-  USER: {
-    min: 4,
-    max: 16,
-  },
-  COMMENT: {
-    min: 10,
-    max: 60,
-  },
-};
+import { isFieldValid } from '../utils/validate-utils';
 
 class CommentsForm extends Component {
   static getErrorClass(error) {
@@ -28,18 +13,16 @@ class CommentsForm extends Component {
     this.state = {
       user: '',
       comment: '',
-      formErrors: {
-        user: '',
-        comment: '',
+      touched: {
+        user: false,
+        comment: false,
       },
-      userValid: false,
-      commentValid: false,
-      formValid: false,
     };
 
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.validateForm = this.validateForm.bind(this);
+    this.onInputBlur = this.onInputBlur.bind(this);
   }
 
   onFormSubmit(evt) {
@@ -47,6 +30,10 @@ class CommentsForm extends Component {
     this.setState({
       user: '',
       comment: '',
+      touched: {
+        user: false,
+        comment: false,
+      },
     });
   }
 
@@ -54,55 +41,35 @@ class CommentsForm extends Component {
     const { name, value } = evt.target;
     this.setState({
       [name]: value,
-    }, () => { this.validateField(name, value); });
+    });
   }
 
-  validateField(field, value) {
-    const validationErrors = this.state.formErrors;
-    let { userValid, commentValid } = this.state;
-    const shortValue = value.length < limits[field.toUpperCase()].min;
-    const longValue = value.length > limits[field.toUpperCase()].max;
-
-    switch (field) {
-      case 'user':
-        userValid = !shortValue && !longValue;
-        validationErrors.user = '';
-        if (!userValid) {
-          validationErrors.user = shortValue ? `User name should contain at least ${limits.USER.min} characters`
-            : `User name should contain not more than ${limits.USER.max} characters`;
-        }
-        break;
-
-      case 'comment':
-        commentValid = !shortValue && !longValue;
-        validationErrors.comment = '';
-        if (!commentValid) {
-          validationErrors.comment = shortValue ? `Comment text should contain at least ${limits.COMMENT.min} characters`
-            : `Comment text  should contain not more than ${limits.COMMENT.max} characters`;
-        }
-        break;
-
-      default:
-        break;
-    }
-
+  onInputBlur(evt) {
+    const { name } = evt.target;
     this.setState({
-      formErrors: validationErrors,
-      userValid,
-      commentValid,
-    }, this.validateForm);
+      touched: {
+        ...this.state.touched,
+        [name]: true,
+      },
+    });
+  }
+
+  getErrorClass(field) {
+    let errorClass = '';
+    if (this.state.touched[field]) {
+      errorClass = !isFieldValid(field, this.state[field]) ? 'error-field' : '';
+    }
+    return errorClass;
   }
 
   validateForm() {
-    this.setState({
-      formValid: this.state.userValid && this.state.commentValid,
-    });
+    return isFieldValid('user', this.state.user) && isFieldValid('comment', this.state.comment);
   }
 
   render() {
     return (
       <form onSubmit={this.onFormSubmit}>
-        <FormErrors formErrors={this.state.formErrors} />
+        <FormErrors formData={this.state} />
         <label htmlFor="userName">Your name:
           <input
             type="text"
@@ -110,16 +77,18 @@ class CommentsForm extends Component {
             name="user"
             value={this.state.user}
             onChange={this.onInputChange}
-            className={CommentsForm.getErrorClass(this.state.formErrors.user)}
+            onBlur={this.onInputBlur}
+            className={this.getErrorClass('user')}
           />
         </label>
         <textarea
           value={this.state.comment}
           name="comment"
           onChange={this.onInputChange}
-          className={CommentsForm.getErrorClass(this.state.formErrors.comment)}
+          onBlur={this.onInputBlur}
+          className={this.getErrorClass('comment')}
         />
-        <button type="submit" disabled={!this.state.formValid}>Submit</button>
+        <button type="submit" disabled={!this.validateForm()}>Submit</button>
       </form>
     );
   }
