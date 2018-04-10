@@ -1,27 +1,33 @@
 import React, { Component as ReactComponent } from 'react';
 
-const toggleOpenWrap = OriginalComponent => class ToggleOpen extends ReactComponent {
-  constructor(props) {
-    super(props);
+const toggleOpenWrap = (OriginalComponent) => {
+  class ToggleOpen extends ReactComponent {
+    constructor(props) {
+      super(props);
 
-    this.state = {
-      isOpen: false,
-    };
+      this.state = {
+        isOpen: false,
+      };
 
 
-    this.toggleOpen = this.toggleOpen.bind(this);
+      this.toggleOpen = this.toggleOpen.bind(this);
+    }
+
+    render() {
+      return <OriginalComponent {...this.props} {...this.state} toggle={this.toggleOpen} />;
+    }
+
+    toggleOpen(event) {
+      event.preventDefault();
+      this.setState({
+        isOpen: !this.state.isOpen,
+      });
+    }
   }
 
-  render() {
-    return <OriginalComponent {...this.props} {...this.state} toggle={this.toggleOpen} />;
-  }
+  ToggleOpen.displayName = `WithToggleOpen(${OriginalComponent.displayName || OriginalComponent.name})`;
 
-  toggleOpen(event) {
-    event.preventDefault();
-    this.setState({
-      isOpen: !this.state.isOpen,
-    });
-  }
+  return ToggleOpen;
 };
 
 export default toggleOpenWrap;
